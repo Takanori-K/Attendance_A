@@ -175,7 +175,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
-  bootstrap-sass (= 3.3.7)
+  bootstrap-sass
   bootstrap-will_paginate
   byebug
   coffee-rails (~> 4.2)
