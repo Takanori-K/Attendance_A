@@ -12,6 +12,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params) #private: user_params
     
     if @user.save
+      log_in @user #sessions_helper
       redirect_to @user
       flash[:success] = "ユーザーの新規作成に成功しました。"  
     else
