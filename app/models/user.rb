@@ -8,4 +8,19 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false } # :unqueオプション, 一意性の検証, case_sensitive: 大文字と小文字の区別
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 } #minimum:最小文字数
+  
+  def User.digest(string)
+    cost = 
+      if ActiveModel::SecurePassword.min_cost
+        BCrypt::Engine::MIN_COST
+      else
+        BCrypt::Engine.cost
+      end
+    BCrypt::Password.create(string, cost: cost)
+  end
+
+  # ランダムなトークンを返します。
+  def User.new_token
+    SecureRandom.urlsafe_base64
+  end 
 end
