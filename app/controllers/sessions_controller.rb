@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:session][:email].downcase) #downcase:小文字
     if user && user.authenticate(params[:session][:password])
       log_in user
-      remember user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       redirect_to user
     else
       flash.now[:danger] = 'メールアドレスとパスワードの情報が一致しませんでした。'
@@ -15,9 +15,9 @@ class SessionsController < ApplicationController
   end
   
   def destroy
-    # ログイン中の場合のみログアウト処理を実行します。
+  # ログイン中の場合のみログアウト処理を実行します。
     log_out if logged_in?
-    flash[:success] = "ログアウトしました。"
+    flash[:success] = 'ログアウトしました。'
     redirect_to root_url
   end
 end
