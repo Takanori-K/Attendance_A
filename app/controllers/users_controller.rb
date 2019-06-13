@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   
-  before_action :logged_in_user, only: [:index, :edit, :update] #ログイン済みユーザーのみ編集と更新
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy] #ログイン済み
   before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
+  before_action :admin_user,     only: :destoy #管理者のみ
   
   def index
     @users = User.paginate(page: params[:page]) #paginate: ページネーション
@@ -40,6 +41,9 @@ class UsersController < ApplicationController
   end
   
   def destory
+    User.find(params[:id]).destroy #findとdestroyのメソッドチェーン
+    flash[:success] = "削除しました。"
+    redirect_to users_url
   end
     
   private
@@ -63,6 +67,11 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user) #current_user?(@user):sessions_ヘルパーメソッド
+    end
+    
+    # 管理者かどうか確認
+    def admin_user
+      redirect_to(root_url) unless current_user.admin?
     end
       
       
