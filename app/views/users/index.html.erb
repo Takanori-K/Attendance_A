@@ -1,0 +1,11 @@
+<% provide(:title, '一覧') %>
+
+<h1>ユーザー覧</h1>
+
+<%= will_paginate %>
+
+<ul class="users">
+    <%= render @users %> <!--@users: パーシャルで出力-->
+</ul>
+
+<%= will_paginate %>

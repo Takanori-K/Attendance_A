@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
   
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.paginate(page: params[:page]) #paginate: ページネーション
   end
   
   def show
