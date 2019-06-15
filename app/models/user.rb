@@ -1,15 +1,18 @@
 class User < ApplicationRecord
   
-  attr_accessor :remember_token # 「remember_token」という仮想の属性を作成します。
+  attr_accessor :remember_token # 「remember_token」という仮想の属性を作成する
   before_save { self.email = email.downcase } #downcase:小文字に変換, self:現在のユーザー
   validates :name,  presence: true, length: { maximum: 50 } #maximum:最大文字数
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false } # :unqueオプション, 一意性の検証, case_sensitive: 大文字と小文字の区別
+  validates :department, length: { in: 3..50 }, allow_blank: true #allow_blank: nil以外に""も対応                  
+  validates :basic_time, presence: true
+  validates :work_time, presence: true                  
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true #minimum:最小文字数, allow_nil:パスワード更新と未入力の場合は検証スルーして更新
-  
+
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
     cost = 
