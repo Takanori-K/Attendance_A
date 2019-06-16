@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   
+  has_many :attendances, dependent: :destroy #dependent: :destroy:ユーザー削除でAttendanceモデルのデータも削除
   attr_accessor :remember_token # 「remember_token」という仮想の属性を作成する
   before_save { self.email = email.downcase } #downcase:小文字に変換, self:現在のユーザー
   validates :name,  presence: true, length: { maximum: 50 } #maximum:最大文字数

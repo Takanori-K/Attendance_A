@@ -2,17 +2,61 @@
 <div>
   <table class="table-bordered table-condensed">
     <tr>
-      <td>時間管理表</td>
+      <td>
+        <%= link_to "←", user_path(params: {id: @user.id, first_day: @first_day.prev_month }),
+                         class: "btn btn-xs btn-primary" %>
+        &emsp;<%= @first_day.to_s(:year_month) %>時間管理表&emsp;
+        <%= link_to "→", user_path(params: {id: @user.id, first_day: @first_day.next_month }),
+                         class: "btn btn-xs btn-primary" %>
+      </td>
       <td>指定勤務時間<%= format_basic_time(@user.work_time) %></td>
       <td>基本時間<%= format_basic_time(@user.basic_time) %></td>
-      <td>初日</td>
+      <td>初日<%= @first_day.to_s(:date) %></td>
     </tr>
 
     <tr>
       <td>所属: <%= @user.department.present? ? @user.department : "未設定" %></td> <!--三項演算子-->
       <td>氏名：<%= @user.name %></td>
       <td>出勤日数</td>
-      <td>締め</td>
+      <td>締め<%= @first_day.to_s(:date) %></td>
     </tr>
+  </table>
+  
+  <table class = "table-bordered table-striped table-condensed">
+    <thead>
+      <tr> <!--rowspan:縦結合、colspan：横結合-->
+        <th rowspan = "2">日付</th>
+        <th rowspan = "2">曜日</th>
+        <th colspan = "3">出社</th>
+        <th colspan = "3">退社</th>
+        <th rowspan = "2">在社時間</th>
+        <th rowspan = "2">備考</th>
+      </tr>
+      <tr>
+        <th>時</th>
+        <th>分</th>
+        <th></th>
+        <th>時</th>
+        <th>分</th>
+        <th></th>
+      </tr>
+    </thead>
+    
+    <tbody>
+      <% @dates.each do |day| %>
+        <tr>
+          <td><%= day.worked_on.to_s(:date) %></td>
+          <td><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 </div>
