@@ -23,6 +23,7 @@ class UsersController < ApplicationController
       end
     end
     @dates = @user.attendances.where('worked_on >= ? and worked_on <= ?', @first_day, @last_day).order('worked_on')
+    @worked_sum = @dates.where.not(started_at: nil).count #where.not:nil以外を取得, count:条件に合った要素の数だけを取得
   end
   
   def new

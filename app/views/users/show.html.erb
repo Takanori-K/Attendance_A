@@ -17,7 +17,7 @@
     <tr>
       <td>所属: <%= @user.department.present? ? @user.department : "未設定" %></td> <!--三項演算子-->
       <td>氏名：<%= @user.name %></td>
-      <td>出勤日数</td>
+      <td>出勤日数<%= @worked_sum %>日</td>
       <td>締め<%= @first_day.to_s(:date) %></td>
     </tr>
   </table>
@@ -54,13 +54,30 @@
               <%= button_to "出社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
             <% end %>
           </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= day.finished_at.to_s(:hour) if day.finished_at.present? %></td>
+          <td><%= day.finished_at.to_s(:min) if day.finished_at.present? %></td>
+          <td>
+            <% if day.worked_on == Date.today && day.started_at.present? && day.finished_at.nil? %>
+              <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
+            <% end %>
+          </td>
+          <td>
+            <% if day.started_at.present? && day.finished_at.present? %>
+              <%= working_times(day.started_at, day.finished_at) %>
+            <% end %>  
+          </td>
           <td></td>
         </tr>
       <% end %>
     </tbody>
+    
+    <tfoot>
+      <tr>
+        <td colspan = "2">総合勤務時間</td>
+        <td colspan = "6"></td>
+        <td>在社時間合計</td>
+        <td></td>
+      </tr>
+    </tfoot>
   </table>
 </div>
