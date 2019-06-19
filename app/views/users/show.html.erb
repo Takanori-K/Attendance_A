@@ -64,6 +64,8 @@
           <td>
             <% if day.started_at.present? && day.finished_at.present? %>
               <%= working_times(day.started_at, day.finished_at) %>
+              <% seconds = (day.finished_at - day.started_at).to_i %>
+              <% @total_seconds = @total_seconds.to_i + seconds %>
             <% end %>  
           </td>
           <td></td>
@@ -73,9 +75,9 @@
     
     <tfoot>
       <tr>
-        <td colspan = "2">総合勤務時間</td>
+        <td colspan = "2"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td> <!--to.f:文字列を浮動小数点数の表現とみなしてFloatオブジェクトに変換-->
         <td colspan = "6"></td>
-        <td>在社時間合計</td>
+        <td><%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
         <td></td>
       </tr>
     </tfoot>
