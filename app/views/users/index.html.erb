@@ -1,7 +1,23 @@
 <% provide(:title, '一覧') %>
 
-<h1>ユーザー覧</h1>
+<% if @users.present? %>
+  <h1>検索結果</h1>
+<% else %>
+  <h1>ユーザー覧</h1>
+<% end %> 
+    
 
+<p class="text-right">ユーザー名検索</p>
+<div id="nav-search">
+  <%= form_tag users_path, :method => 'get' do %>
+    <div class="input-group">
+        <%= text_field_tag :search, params[:search], placeholder: "キーワード検索", class: "form-control" %>
+          <span class="input-group-btn">
+            <%= button_tag "検索", :name => nil, class: "btn btn-primary" %>
+          </span>
+    </div>
+  <% end %>
+</div>
 <%= will_paginate %>
 
 <ul class="users">

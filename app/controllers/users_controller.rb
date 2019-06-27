@@ -5,7 +5,10 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:destroy, :edit_basic_info, :update_basic_info] #管理者のみ
   
   def index
-    @users = User.paginate(page: params[:page]) #paginate: ページネーション
+    @users = User.paginate(page: params[:page]).search(params[:search]) #paginate: ページネーション, search: 検索
+    if params[:name].present?
+      @users = @users.get_by_name params[:name] #ユーザー名を絞り込む
+    end
   end
   
   def show
@@ -62,12 +65,14 @@ class UsersController < ApplicationController
   
   def update_basic_info
     @user = User.find(params[:id])
-    if @user.update_attributes(basic_info_params)
-      flash[:success] = "基本情報を更新しました。"
-      redirect_to @user   
-    else
-      render 'edit_basic_info'
+    @users = User.all
+    @users.each do |user|
+      unless user.update_attributes(basic_info_params)
+        render 'edit_basic_info'
+      end
     end
+    flash[:success] = "基本情報を更新しました。"
+    redirect_to @user
   end
     
     
