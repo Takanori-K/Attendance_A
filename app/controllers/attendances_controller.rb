@@ -1,5 +1,7 @@
 class AttendancesController < ApplicationController
   
+  before_action :admin_or_correct_user, only:[:create, :edit, :update]
+  
   def create
     @user = User.find(params[:user_id])
     @attendance = @user.attendances.find_by(worked_on: Date.today)
@@ -41,5 +43,12 @@ class AttendancesController < ApplicationController
   
     def attendances_params
       params.permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+    
+    def admin_or_correct_user
+      unless current_user?(@user) || current_user.admin?
+        flash[:danger] = "編集権限がありません。"
+        redirect_to(root_url)
+      end  
     end
 end
