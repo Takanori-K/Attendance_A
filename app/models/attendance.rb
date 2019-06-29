@@ -1,7 +1,7 @@
 class Attendance < ApplicationRecord
   belongs_to :user
   
-  validates :worked_on, presence: true
+  validates :worked_on, presence: true  #日付カラム
   validate :finished_at_is_invalid_without_a_started_at
   validate :finished_at_is_earlier_than_started_at
   

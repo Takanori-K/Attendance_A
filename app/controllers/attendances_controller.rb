@@ -1,6 +1,6 @@
 class AttendancesController < ApplicationController
   
-  before_action :admin_or_correct_user, only:[:create, :edit, :update]
+  before_action :admin_or_correct_user, only:[ :edit, :update]
   
   def create
     @user = User.find(params[:user_id])
