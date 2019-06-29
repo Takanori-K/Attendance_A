@@ -18,7 +18,7 @@
       <td>所属: <%= @user.department.present? ? @user.department : "未設定" %></td> <!--三項演算子-->
       <td>氏名：<%= @user.name %></td>
       <td>出勤日数<%= @worked_sum %>日</td>
-      <td>締め<%= @first_day.to_s(:date) %></td>
+      <td>締め<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
   

@@ -33,7 +33,7 @@
               <td><%= af.time_field :finished_at, readonly: true, class: "form-control" %></td>
             <% else %>
               <td><%= af.time_field :started_at, class: "form-control" %></td>
-              <td><%= af.time_field :started_at, class: "form-control" %></td>
+              <td><%= af.time_field :finished_at, class: "form-control" %></td>
             <% end %>
             <td>
               <% if day.started_at.present? && day.finished_at.present? %>

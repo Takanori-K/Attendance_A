@@ -26,7 +26,7 @@ class AttendancesController < ApplicationController
   
   def update
     @user = User.find(params[:id])
-    if attendances_invalid? #ヘルパー
+    if attendances_invalid?
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
         attendance.update_attributes(item)

@@ -27,15 +27,14 @@ module AttendancesHelper
   end
   
   def attendances_invalid?
-    attendances = true #不正な値はない状態でのスタート
+    attendances = true
     attendances_params.each do |id, item|
-      #制御構造と呼ばれる式
-      if item[:started_at].blank? && item[:finished_at].blank? #どちらも空欄
-        next #次の繰り返し処理が続行される
-      elsif item[:started_at].blank? || item[:finished_at].blank? #どちらか空欄
+      if item[:started_at].blank? && item[:finished_at].blank?
+        next
+      elsif item[:started_at].blank? || item[:finished_at].blank?
         attendances = false
-        break #繰り返し処理を終了
-      elsif item[:started_at] > item[:finished_at] #出勤時間が退勤時間より大きい場合
+        break
+      elsif item[:started_at] > item[:finished_at]
         attendances = false
         break
       end
