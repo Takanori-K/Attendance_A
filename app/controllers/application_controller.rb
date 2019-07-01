@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   def admin_or_correct_user
     @user = User.find(params[:id])
       unless current_user?(@user) || current_user.admin?
-        flash[:danger] = "アクセス権限がありません。"
         redirect_to(root_url)
       end  
   end
