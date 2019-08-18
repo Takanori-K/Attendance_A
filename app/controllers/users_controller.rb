@@ -7,9 +7,6 @@ class UsersController < ApplicationController
   
   def index
     @users = User.paginate(page: params[:page]).search(params[:search]) #paginate: ページネーション, search: 検索
-    if params[:name].present?
-      @users = @users.get_by_name params[:name] #ユーザー名を絞り込む
-    end
   end
   
   def show
