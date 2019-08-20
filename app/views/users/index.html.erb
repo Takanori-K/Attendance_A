@@ -6,14 +6,49 @@
   <% @users.each do |user| %>
     <div class="form-gruop">
       <p><%= user.name %></p>
-        |<%= link_to "削除", user, method: :delete, class: "btn btn-primary",
+        |&nbsp;<%= link_to "削除", user, method: :delete, class: "btn btn-primary",
                                     data: { confirm: "削除しますか？" } %>
-        <div class="panel-gruop" id="panel-users">
+        <div class="panel-gruop" id="accordion">
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
-                <a data-toggle="collapse" href="#collapse<%=user.id %>"><button type="submit" class="btn btn-lg btn-primary">編集</button></a>
+                <a data-toggle="collapse" href="#collapse<%= user.id %>"><button type="submit" class="btn btn-lg btn-primary">編集</button></a>
               </h4>
+            </div>
+            <div id="collapse<%= user.id %>" class="collapse">
+              <div class="panel-body">
+                <%= form_with(model: user, local: true) do |f| %>
+                  
+                  <%= f.label :name %>
+                  <%= f.text_field :name, class: 'form-control' %>
+                  
+                  <%= f.label :email %>
+                  <%= f.email_field :email, class: 'form-control' %>
+                  
+                  <%= f.label :affiliation %>
+                  <%= f.text_field :affiliation, class: 'form-control' %>
+                  
+                  <%= f.label :employee_number %>
+                  <%= f.text_field :employee_number, class: 'form-control' %>
+                  
+                  <%= f.label :uid %>
+                  <%= f.text_field :uid, class: 'form-control' %>
+                  
+                  <%= f.label :password %>
+                  <%= f.password_field :password, class: 'form-control' %>
+                  
+                  <%= f.label :basic_work_time %>
+                  <%= f.time_field :basic_work_time, class: 'form-control' %>
+                  
+                  <%= f.label :designated_work_start_time %>
+                  <%= f.time_field :designated_work_start_time, class: 'form-control' %>
+                  
+                  <%= f.label :designated_work_end_time %>
+                  <%= f.time_field :designated_work_end_time, class: 'form-control' %>
+                  
+                  <%= f.submit "編集", class: "btn btn-primary" %>
+                <% end %>  
+              </div>
             </div>
           </div>
         </div>
