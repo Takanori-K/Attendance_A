@@ -72,6 +72,18 @@ class UsersController < ApplicationController
     flash[:success] = "基本情報を更新しました。"
     redirect_to @user
   end
+  
+  def employees_on_duty
+  @users = {}
+    User.all.each do |user|
+      if user.attendances.any?{|day|
+                          ( day.worked_on == Date.today &&
+                            !day.started_at.blank? &&
+                            day.finished_at.blank? )}
+    @users.merge!(user.name => user.employee_number)
+      end
+    end
+  end
     
     
   private
