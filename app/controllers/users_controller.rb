@@ -9,6 +9,11 @@ class UsersController < ApplicationController
     @users = User.paginate(page: params[:page]).search(params[:search]) #paginate: ページネーション, search: 検索
   end
   
+  def import
+    User.import(params[:file])
+    redirect_to users_url
+  end
+  
   def show
     @user = User.find(params[:id])
     @first_day = first_day(params[:first_day]) #ヘルパー

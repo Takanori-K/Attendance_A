@@ -2,7 +2,7 @@ User.create!(name:  "管理者",
              email: "email@sample.com",
              password:              "password",
              password_confirmation: "password",
-             employee_number:       "1",
+             employee_number:        "1",
              admin: true)
              
 5.times do |n|
