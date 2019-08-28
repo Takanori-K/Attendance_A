@@ -10,7 +10,12 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false } # :unqueオプション, 一意性の検証, case_sensitive: 大文字と小文字の区別
   validates :affiliation, length: { in: 3..50 }, allow_blank: true #allow_blank: nil以外に""も対応                  
   validates :basic_time, presence: true
-  validates :work_time, presence: true 
+  validates :work_time, presence: true
+  validates :employee_number, presence: true
+  validates :uid, presence: true
+  validates :basic_work_time, presence: true
+  validates :designated_work_start_time, presence: true
+  validates :designated_work_end_time, presence: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true #minimum:最小文字数, allow_nil:パスワード更新と未入力の場合は検証スルーして更新
 

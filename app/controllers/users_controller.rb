@@ -7,11 +7,18 @@ class UsersController < ApplicationController
   
   def index
     @users = User.paginate(page: params[:page]).search(params[:search]) #paginate: ページネーション, search: 検索
+    @user = User.new
   end
   
   def import
-    User.import(params[:file])
-    redirect_to users_url
+    if params[:file].blank?
+      flash[:danger] = "CSVファイルを選択して下さい。"
+      redirect_to users_url
+    else
+      User.import(params[:file])
+      flash[:success] = "CSVファイルをインポートしました。"
+      redirect_to users_url
+    end
   end
   
   def show
@@ -48,11 +55,12 @@ class UsersController < ApplicationController
   end
   
   def update
-    if @user.update_attributes(user_params)
+    @users = User.all
+    if @user.update_attributes(basic_info_params)
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to @user
     else
-      render 'edit'
+      render action: :index
     end
   end
   
@@ -94,7 +102,8 @@ class UsersController < ApplicationController
   private
     
     def user_params
-      params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation, :employee_number, :uid,
+                                   :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
     
     def basic_info_params
