@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'bases/index'
+
   root 'static_pages#top'
   get  '/signup', to: 'users#new'
   get  '/login',  to: 'sessions#new'
@@ -14,4 +16,5 @@ Rails.application.routes.draw do
     collection { post :import }
     resources :attendances, only: :create
   end
+  resources :bases
 end
