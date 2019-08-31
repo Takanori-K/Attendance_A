@@ -3,11 +3,11 @@
 <table class="table-bordered table-striped table-condensed">
   <thead>
     <tr>
-      <th></th>
-      <th></th>
-      <th>base_number</th>
-      <th>base_name</th>
-      <th>attendance_type</th>
+      <td></td>
+      <td></td>
+      <td>base_number</td>
+      <td>base_name</td>
+      <td>attendance_type</td>
     </tr>
   </thead>
   <tbody>
@@ -19,7 +19,9 @@
         <td></td>
         <td></td>
       </tr>
-    <% end %>
-    
+    <% end %>  
   </tbody>
 </table>
+<div class="btn-base-create">
+  <%= link_to "拠点情報追加", new_basis_path, class: "btn btn-primary btn-base-info" %>
+</div>
