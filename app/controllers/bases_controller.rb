@@ -13,9 +13,9 @@ class BasesController < ApplicationController
   def create
     @base = Base.new(base_params)
     if @base.save
-      flash[:notice] = "拠点情報を追加しました。"
+      flash[:success] = "拠点情報を追加しました。"
     else
-      flash[:danger] = "拠点情報の追加は失敗しました。</br>" + @user.errors.full_messages.join("<br>")
+      flash[:danger] = "拠点情報の追加は失敗しました。</br>" + @base.errors.full_messages.join("<br>")
     end
     redirect_to bases_url  
   end
@@ -29,6 +29,6 @@ class BasesController < ApplicationController
   private
     
     def base_params
-      params.require(:base).premit(:base_number, :base_name, :attendance_type)
+      params.require(:base).permit(:base_number, :base_name, :attendance_type)
     end
 end
