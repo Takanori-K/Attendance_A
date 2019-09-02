@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy] #ログイン済み
-  before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
-  before_action :admin_user,     only: [:index, :destroy, :edit_basic_info, :update_basic_info] #管理者のみ
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info] #ログイン済み
+  #before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
+  before_action :admin_user,     only: [:index, :destroy, :edit_basic_info, :update_basic_info, :import, :employees_on_duty] #管理者のみ
   before_action :admin_or_correct_user, only:[:show, :edit, :update]
   
   def index
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
   
   def update
     @users = User.all
-    if @user.update_attributes(basic_info_params)
+    if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to @user
     else
@@ -78,12 +78,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @users = User.all
     @users.each do |user|
-      unless user.update_attributes(basic_info_params)
-        render 'edit_basic_info'
+      if user.update_attributes(basic_info_params)
+        flash[:success] = "基本情報を更新しました。"
+        redirect_to @user and return
       end
     end
-    flash[:success] = "基本情報を更新しました。"
-    redirect_to @user
+    render 'edit_basic_info'
   end
   
   def employees_on_duty
@@ -112,23 +112,10 @@ class UsersController < ApplicationController
     
     #beforeアクション
     
-    # ログイン済みユーザーか確認
-    def logged_in_user
-      unless logged_in?
-      store_location #sessions_ヘルパー, URLとページの記憶
-      flash[:danger] = "ログインしてください。"
-      redirect_to login_url
-      end
-    end
-    
     # 正しいユーザーかどうか確認
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user) #current_user?(@user):sessions_ヘルパーメソッド
     end
     
-    # 管理者かどうか確認
-    def admin_user
-      redirect_to(root_url) unless current_user.admin?
-    end
 end

@@ -1,4 +1,8 @@
 class BasesController < ApplicationController
+  before_action :set_base, only: [:edit, :update]
+  before_action :logged_in_user
+  before_action :admin_user
+  
   def new
     @base = Base.new
   end
@@ -21,14 +25,28 @@ class BasesController < ApplicationController
   end
   
   def update
+    if @base.update_attributes(base_params)
+      flash[:success] = "拠点情報を更新しました。"
+    else
+      flash[:danger] = "拠点情報の更新は失敗しました。</br>" + @base.errors.full_messages.join("</br>")
+    end
+    redirect_to bases_url
   end
   
   def destroy
+    Base.find(params[:id]).destroy
+    flash[:success] = "拠点情報を削除しました。"
+    redirect_to bases_url
   end
   
   private
     
     def base_params
       params.require(:base).permit(:base_number, :base_name, :attendance_type)
+    end
+    
+    #beforeフィルター
+    def set_base
+      @base = Base.find(params[:id])
     end
 end
