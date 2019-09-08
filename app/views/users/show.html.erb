@@ -16,7 +16,9 @@
       <td colspan="3" rowspan="2"><br>
         基本時間<%= format_basic_time(@user.basic_time) %>
       </td>
-      <td rowspan = "2">初日<%= @first_day.to_s(:date) %></td>
+      <td rowspan = "2"></br>
+        初日<%= @first_day.to_s(:date) %>
+      </td>
     </tr>
 
     <tr>
@@ -115,12 +117,19 @@
     <tfoot>
       <tr>
         <td></td>
-        <td></td>
-        <td></td>
-        <td colspan = "2"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %> <!--to.f:文字列を浮動小数点数の表現とみなしてFloatオブジェクトに変換-->
-        <td colspan = "4"></td>
+        <td colspan = "2"></td>
+        <td colspan = "6"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %> <!--to.f:文字列を浮動小数点数の表現とみなしてFloatオブジェクトに変換-->
         <td><%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
-        <td></td>
+        <td colspan = "5"></td>
+        <td>
+          <select class = "form-control">
+            <option>東京</option>
+            <option>名古屋</option>        
+            <option>大阪</option>
+            <option>福岡</option>
+            <option>海外</option>
+          </select>
+        </td>
       </tr>
     </tfoot>
   </table>
