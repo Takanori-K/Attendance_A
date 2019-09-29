@@ -72,7 +72,9 @@
     <tbody>
       <% @dates.each do |day| %>
         <tr>
-          <td></td>
+          <td>
+            <%= link_to "残業申請", edit_overtime_path(@user, params:{ day: day.worked_on, youbi: %w{日 月 火 水 木 金 土}[day.worked_on.wday] }), remote: true, class: "btn btn-primary" %>
+          </td>
           <td><%= day.worked_on.to_s(:date) %></td>
           <td>
             <% if day.worked_on.wday == 0 %>
@@ -126,3 +128,5 @@
     </tfoot>
   </table>
 </div>
+
+<div id="edit-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

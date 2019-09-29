@@ -39,6 +39,15 @@ class AttendancesController < ApplicationController
     end
   end
   
+  def edit_overtime
+    @user = User.find(params[:id])
+    @day = Date.parse(params[:day])
+    @youbi = $days_of_the_week[@day.wday]
+  end
+  
+  def update_overtime
+  end
+  
   private
   
     def attendances_params
