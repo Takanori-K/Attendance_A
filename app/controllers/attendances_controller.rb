@@ -42,6 +42,7 @@ class AttendancesController < ApplicationController
   def edit_overtime
     @user = User.find(params[:id])
     @day = Date.parse(params[:day])
+    @attendance = @user.attendances.find_by(worked_on: @day)
     @youbi = $days_of_the_week[@day.wday]
   end
   
