@@ -43,15 +43,29 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:id])
     @day = Date.parse(params[:day])
     @attendance = @user.attendances.find_by(worked_on: @day)
-    @youbi = $days_of_the_week[@day.wday]
+    @youbi = params[:youbi]
+    @superior_1 = User.find_by(superior: true, name: "上長A")
+    @superior_2 = User.find_by(superior: true, name: "上長B")
   end
   
   def update_overtime
+    @user = User.find(params[:attendance][:user_id])
+    @attendance = @user.attendances.find(params[:attendance][:id])
+    if @attendance.update_attributes(overtime_params)
+      flash[:success] = "残業申請を送信しました。"
+    else
+      flash[:danger] = "残業申請を送信出来ませんでした。<br>" + @attendance.errors.full_messages.join("<br>")
+    end
+    redirect_to user_url
   end
   
   private
   
     def attendances_params
       params.permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+    
+    def overtime_params
+      params.require(:attendance).permit(:scheduled_end_time, :next_day, :business_description, :instructor_sign)
     end
 end

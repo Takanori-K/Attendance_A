@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info] #ログイン済み
-  #before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
+  before_action :correct_user,   only: [:edit, :update] #正しいユーザーのみ
   before_action :admin_user,     only: [:index, :destroy, :edit_basic_info, :update_basic_info, :import, :employees_on_duty] #管理者のみ
   before_action :admin_or_correct_user, only:[:show, :edit, :update]
   

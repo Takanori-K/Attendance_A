@@ -7,30 +7,35 @@
       <h1 class="modal-title">残業申請</h1>
     </div>
     <div class="modal-body">
-      <table class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>曜日</th>
-            <th>終了予定時間</th>
-            <th>翌日</th>
-            <th>業務処理内容</th>
-            <th>指示者確認㊞</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><%= @day.to_s(:date) %></td>
-            <td><%= @youbi %></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-          
-          
-      </table>
+      <%= form_with(model: @attendance, url: update_overtime_path(@user), local: true, method: :patch) do |f| %>
+        <%= f.hidden_field :id, :value => @attendance.id %>
+        <%= f.hidden_field :user_id, :value => @user.id %>
+        <table class="table table-bordered table-condensed" id="table-attendances">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th>終了予定時間</th>
+              <th>翌日</th>
+              <th>業務処理内容</th>
+              <th>指示者確認㊞</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= l(@day, format: :short) %></td>
+              <td><%= @youbi %></td>
+              <td><%= f.time_field :scheduled_end_time, class: "form-control" %></td>
+              <td><%= f.check_box :next_day, {:checked => false} , "true", "false" %></td>
+              <td><%= f.text_field :business_discription, class: "form-control" %></td>
+              <td>
+                <%= f.select :instructor_sign, [["#{@superior_1.name}", "#{@superior_1.id}"],["#{@superior_2.name}", "#{@superior_2.id}"]], include_blank: true, class: "form-control" %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+          <%= f.submit "変更を送信する", class: "btn btn-primary btn-block" %>
+      <% end %>
     </div>
   </div>
 </div>
