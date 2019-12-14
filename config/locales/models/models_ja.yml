@@ -29,3 +29,9 @@ ja:
           base_number: 拠点番号
           base_name: 拠点名
           attendance_type: 勤怠種類
+  enums:
+    attendance:
+      overtime_status:
+        applying: 申請中
+        approval: 承認
+        denial: 否認

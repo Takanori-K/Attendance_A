@@ -14,6 +14,26 @@ module AttendancesHelper
     format("%.2f", (((finished_at - started_at) / 60) / 60.0)) #計算結果は秒数で返ってくるから秒数を２度６０で割る
   end
   
+  def working_times_tomorrow(start, finish)
+    format("%.2f", (((finish - start) / 60) / 60.0) + 24 )
+  end
+  
+  def overwork_times(scheduled, designated)
+    format("%.2f", format_basic_time(scheduled).to_i - format_basic_time(designated).to_i)
+  end
+  
+  def overwork_time(scheduled, designated)
+    format("%.2f", (((scheduled - designated) / 60) / 60.0))
+  end
+  
+  def overwork_time_tomorrow(scheduled, designated)
+    format("%.2f", (((scheduled - designated) / 60) / 60.0) + 24 )
+  end
+    
+  def overwork_times_tomorrow(scheduled, designated)
+    format("%.2f", (format_basic_time(scheduled).to_i - format_basic_time(designated).to_i) + 24.0 )
+  end
+  
   def working_times_sum(seconds)
     format("%.2f", seconds / 60 / 60.0)
   end

@@ -1,6 +1,6 @@
 <% provide(:title, '勤怠表示') %>
 <div>
-  <table class="table-bordered table-condensed">
+  <table class="table table-bordered table-condensed user-table">
     <tr>
       <td rowspan = "2">
         <%= link_to "←", user_path(params: {id: @user.id, first_day: @first_day.prev_month }),
@@ -34,11 +34,25 @@
     </tr>
   </table>
   
+  <% if current_user?(@user) %>
+    <% if current_user.superior? %>
+      <% if @notice.blank? %>
+        <h4>【残業申請のお知らせ】</h4>
+      <% else %>
+        <div class="overtime-info">
+          <%= link_to "【残業申請のお知らせ】", edit_overtime_info_path(@user, date: @first_day), remote: true, style: "color:red" %>
+          <font color="red"><%= @count %>件の通知があります</font><br>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>  
+    
+  
   <%= link_to "勤怠を編集", edit_attendances_path(@user, @first_day), class: "btn btn-primary" %>
   <%= link_to "CSV出力", '#', class: "btn btn-primary" %></br>
   <%= link_to "勤怠修正ログ（承認済）", '#', class: "btn btn-primary" %>
   
-  <table class = "table-bordered table-striped table-condensed">
+  <table class = "table table-bordered table-striped table-condensed" id = "table-attendances">
     <thead>
       <tr>
         <th rowspan = "3">残業申請</th>
@@ -107,11 +121,29 @@
             <% end %>  
           </td>
           <td><%= day.note %></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= day.scheduled_end_time.to_s(:hour) if day.scheduled_end_time.present? && day.approval? %></td>
+          <td><%= day.scheduled_end_time.to_s(:min) if day.scheduled_end_time.present? && day.approval? %></td>
+          <td>
+            <% if day.scheduled_end_time.present? && day.user.designated_work_end_time.present? && day.approval? %>
+              <% if day.next_day.present? && day.next_day == "true" %>
+                <%= overwork_time_tomorrow(day.scheduled_end_time, day.user.designated_work_end_time) %>
+              <% elsif day.next_day.present? && day.next_day == "false" %>  
+                <%= overwork_time(day.scheduled_end_time, day.user.designated_work_end_time) %>
+              <% end %>  
+            <% end %>
+          </td>
+          <td><%= day.business_description if day.approval? %></td>
+          <td>
+            <% if day.instructor_sign.present? %>
+              <% if day.applying? %>
+                <span><%= day.instructor_sign %>へ残業申請中&emsp;</span>
+              <% elsif day.approval? %>
+                <span>残業承認済&emsp;</span>
+              <% elsif day.denial? %>
+                <span>残業否認&emsp;</span>
+              <% end %>  
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -123,10 +155,14 @@
         <td colspan = "6"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %> <!--to.f:文字列を浮動小数点数の表現とみなしてFloatオブジェクトに変換-->
         <td><%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
         <td colspan = "5"></td>
-        <td></td>
+        <td>
+          <span>所属長承認</span><br>
+            
+        </td>
       </tr>
     </tfoot>
   </table>
 </div>
 
 <div id="edit-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overtime-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

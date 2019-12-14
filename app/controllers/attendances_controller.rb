@@ -1,6 +1,7 @@
 class AttendancesController < ApplicationController
   
-  before_action :admin_or_correct_user, only:[ :edit, :update]
+  before_action :admin_or_correct_user, only:[:edit, :update]
+  before_action :logged_in_user, only:[:edit_overtime_work, :update_overtime_work]
   
   def create
     @user = User.find(params[:user_id])
@@ -44,19 +45,42 @@ class AttendancesController < ApplicationController
     @day = Date.parse(params[:day])
     @attendance = @user.attendances.find_by(worked_on: @day)
     @youbi = params[:youbi]
-    @superior_1 = User.find_by(superior: true, name: "上長A")
-    @superior_2 = User.find_by(superior: true, name: "上長B")
+    @superiors = User.where.not(id: current_user.id).where(superior: true)
   end
   
   def update_overtime
     @user = User.find(params[:attendance][:user_id])
     @attendance = @user.attendances.find(params[:attendance][:id])
-    if @attendance.update_attributes(overtime_params)
-      flash[:success] = "残業申請を送信しました。"
+    # binding.pry
+    if params[:attendance][:scheduled_end_time].blank? || params[:attendance][:instructor_sign].blank?
+      flash[:danger] = "必須箇所が空欄です。"
+      redirect_to @user
     else
-      flash[:danger] = "残業申請を送信出来ませんでした。<br>" + @attendance.errors.full_messages.join("<br>")
+      @attendance.update_attributes(overtime_params)
+      flash[:success] = "残業申請が完了しました。"
+      redirect_to @user and return
     end
-    redirect_to user_url
+  end
+  
+  def edit_overtime_info
+    @user = User.find(params[:user_id])
+    @attendance = Attendance.find(params[:id])
+    @users = User.all
+  end
+  
+  def update_overtime_info
+    @user = User.find(params[:user_id])
+    ActiveRecord::Base.transaction do
+      overtimes_params.each do |id, item|
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+      end
+    end
+      flash[:success] = "残業申請の変更を送信しました。"
+      redirect_to user_url(current_user)
+  rescue ActiveRecord::RecordInvalid
+      flash[:danger] = "変更にチェックを入れてください。"
+      redirect_to user_url(current_user)
   end
   
   private
@@ -66,6 +90,10 @@ class AttendancesController < ApplicationController
     end
     
     def overtime_params
-      params.require(:attendance).permit(:scheduled_end_time, :next_day, :business_description, :instructor_sign)
+      params.require(:attendance).permit(:scheduled_end_time, :next_day, :business_description, :instructor_sign, :overtime_status, :overtime_change)
+    end
+    
+    def overtimes_params
+      params.require(:user).permit(attendances: [:overtime_status, :overtime_change])[:attendances]
     end
 end

@@ -33,6 +33,9 @@ class UsersController < ApplicationController
     end
     @dates = user_attendances_month_date
     @worked_sum = @dates.where.not(started_at: nil).count #where.not:nil以外を取得, count:条件に合った要素の数だけを取得
+    
+    @notice = Attendance.where(instructor_sign: current_user.name).where(overtime_change: "false")
+    @count = Attendance.where(instructor_sign: current_user.name, overtime_change: "false").count
   end
   
   def new
@@ -108,14 +111,6 @@ class UsersController < ApplicationController
     
     def basic_info_params
       params.require(:user).permit(:basic_time, :work_time)
-    end
-    
-    #beforeアクション
-    
-    # 正しいユーザーかどうか確認
-    def correct_user
-      @user = User.find(params[:id])
-      redirect_to(root_url) unless current_user?(@user) #current_user?(@user):sessions_ヘルパーメソッド
     end
     
 end

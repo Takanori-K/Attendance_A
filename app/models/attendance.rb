@@ -5,6 +5,8 @@ class Attendance < ApplicationRecord
   validate :finished_at_is_invalid_without_a_started_at
   validate :finished_at_is_earlier_than_started_at
   
+  enum overtime_status: { applying: 0, approval: 1, denial: 2 }
+  
   #退社時間を保存するには出勤時間が存在しなければならない  
   def finished_at_is_invalid_without_a_started_at
     errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?

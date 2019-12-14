@@ -1,0 +1,78 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <%= form_with(model: @user, url: update_overtime_info_path(date: @first_day), local: true) do |f| %>
+    <div class="modal-body">
+      <% count = 0 %>
+      <% @users.each do |user| %>
+      <% count = 1 %>
+        <% attendances = Attendance.where(user_id: user.id, instructor_sign: current_user.name, overtime_change: "false") %>
+        <% if attendances.present? && count == 1 %>
+          <h3 class="modal-title">【<%= user.name %>からの残業申請】</h3>
+              <table class="table table-bordered table-condensed" id ="table-attendances">
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>曜日</th>
+                    <th>終了予定時間</th>
+                    <th>指定勤務終了時間</th>
+                    <th>時間外時間</th>
+                    <th>業務処理内容</th>
+                    <th>指示者確認㊞</th>
+                    <th>変更</th>
+                    <th>勤怠を確認する</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% attendances.each do |at| %>
+                    <%= f.fields_for "attendances[]", at do |attendance| %>
+                      <tr>
+                        <td><%= at.worked_on %></td>
+                        <td>
+                          <% if at.worked_on.wday == 0 %>
+                            <font color="Red"><%= $days_of_the_week[at.worked_on.wday] %></font>
+                          <% elsif at.worked_on.wday == 6 %>
+                            <font color="Blue"><%= $days_of_the_week[at.worked_on.wday] %></font>
+                          <% else %>
+                            <%= $days_of_the_week[at.worked_on.wday] %>
+                          <% end %>
+                        </td>
+                        <td><%= l(at.scheduled_end_time, format: :time) %></td>
+                        <td><%= l(at.user.designated_work_end_time, format: :time) %></td>
+                        <td>
+                           <% if at.scheduled_end_time.present? && at.user.designated_work_end_time.present? %>
+                            <% if at.next_day.present? && at.next_day == "true" %>
+                              <%= overwork_time_tomorrow(at.scheduled_end_time, at.user.designated_work_end_time) %>
+                            <% elsif at.next_day.present? && at.next_day == "false" %>  
+                              <%= overwork_time(at.scheduled_end_time, at.user.designated_work_end_time) %>
+                            <% end %>  
+                          <% end %>  
+                        </td>
+                        <td><%= at.business_description %></td>
+                        <td>
+                          <%= attendance.select :overtime_status, Attendance.overtime_statuses_i18n.invert, class: "form-control" %>
+                        </td>
+                        <td>
+                          <%= attendance.check_box :overtime_change,  {:checked => false}, "true", "false" %>
+                        </td>
+                        <td>
+                          <%= link_to "確認", user_path(user, date: @first_day), class: "btn btn-primary" %>
+                        </td>
+                      </tr>
+                    <% end %>  
+                  <% end %>
+                </tbody>
+              </table>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="center">
+      <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+    </div>  
+    <% end %>
+  </div>
+</div>

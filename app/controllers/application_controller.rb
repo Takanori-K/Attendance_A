@@ -11,6 +11,11 @@ class ApplicationController < ActionController::Base
       end  
   end
   
+  def correct_user
+    @user = User.find(params[:id])
+    redirect_to(root_url) unless current_user?(@user) #current_user?(@user):sessions_ヘルパーメソッド
+  end
+  
   # ログイン済みユーザーか確認
   def logged_in_user
     unless logged_in?
